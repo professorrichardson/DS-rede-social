@@ -81,6 +81,197 @@ Para acessar esse gráfico no HTML, em  `graficos-container`, podemos escrever  
 Para finalizar, vamos pedir para o  `Plotly`  criar um novo gráfico, usando o método  `.newPlot()`  e passando como parâmetros a estrutura do gráfico e as informação que ele apresentará. Portanto:  `Plotly.newPlot(grafico, data)`.
 
 
+Agora, vamos criar a estrutura do gráfico.
+
+Teremos uma variável nomeada como  `const data`  ( data significa dado, informação), que receberá colchetes e chaves  `[{}]`.
+
+Dentro das chaves, vamos inserir as informações (dados) que serão exibidas no gráfico. Ele terá um eixo  `x`  (  _horizontal_  ) e um eixo  `y`  (  _vertical_  ), além de um  `type`  (  _tipo_  ). Um gráfico sempre receberá essas três informações.
+
+O eixo  `x`  vai receber  `nomeDasRedes`. O eixo  `y`  vai receber  `quantidadeUsuarios`. O  `type`  vai receber  `bar`, afinal, queremos criar um gráfico de barras.
+
+```go
+const data = [
+  {
+    x: nomeDasRedes,
+    y: quantidadeUsuarios,
+    type: 'bar'
+  }
+]
+```
+## Exibindo o gráfico
+
+Para exibir esse gráfico, precisamos inseri-lo dentro da seção  `graficos-container`, que está no arquivo  `index.html`. Faremos isso diretamente pelo JavaScript.
+
+Ainda no arquivo  `quantidadeUsuarios.js`, depois da  `const data`, vamos criar uma variável  `const grafico`  (no singular) que recebe  `document.createElement('div')`.
+
+Logo depois, vamos criar uma classe de CSS para esse gráfico, com  `grafico.className = 'grafico'`.
+
+```javascript
+const grafico = document.createElement('div')
+grafico.className = 'grafico'
+document.getElementById('graficos-container').appendChild(grafico)
+Plotly.newPlot(grafico, data)
+```
+Para acessar esse gráfico no HTML, em  `graficos-container`, podemos escrever  `document.getElementById('graficos-container')`, que é o local onde vamos gerar todos os gráficos, e adicionar  `.appendChild(grafico)`  para inserir o nosso novo gráfico.
+
+Para finalizar, vamos pedir para o  `Plotly`  criar um novo gráfico, usando o método  `.newPlot()`  e passando como parâmetros a estrutura do gráfico e as informação que ele apresentará. Portanto:  `Plotly.newPlot(grafico, data)`.
+
+Nosso gráfico foi gerado, porém, ele está usando as cores padrão do Plotly. Queremos usar nossas próprias cores, a paleta de cores que escolhemos no início do projeto. Vamos lá!
+
+## Estilizando as cores
+
+Primeiramente, vamos instruir o código a utilizar as cores que queremos.
+
+No arquivo  `quantidadeUsuarios.js`, dentro da  `const data`, vamos adicionar uma vírgula e uma linha para definir que as barras do gráfico (  `marker`  ) tenham uma propriedade de cor.
+
+```go
+const data = [
+  {
+    x: 'nomeDasRedes',
+    y: quantidadeDeUsuarios,
+    type: 'bar',
+    marker: {
+      color: 'red'
+    }
+  }
+]
+
+```
+
+Por exemplo, se definirmos a  `color: 'red'`  e salvarmos, veremos que as barras agora estão vermelhas.
+
+![alt text: Captura de tela do navegador na página do projeto, mostrando o gráfico com a quantidade de usuários em barras para cada rede social. O fundo está branco e as barras vermelhas.](http://cdn3.gnarususercontent.com.br/3614-ciencia-dados/Imagens/Ciencia%20de%20dados_9.1-FCF1.png)
+
+Queremos que o gráfico utilize as cores definidas com nossa paleta de cores, que foi criada no arquivo  `style.css`. Para isso, vamos instruir o código a pegar os estilos do documento, especificamente do  `body`, usando o método  `getComputedStyle()`  e passando  `document.body`  como parâmetro. Para pegar a propriedade específica de cor, também passaremos  `get.PropertyValue('--primary-color')`.
+
+```go
+const data = [
+  {
+    x: 'nomeDasRedes',
+    y: quantidadeDeUsuarios,
+    type: 'bar',
+    marker: {
+      color: getComputedStyle(document.body).getPropertyValue('--primary-color')
+    }
+  }
+]
+
+```
+
+Ao salvar e voltar ao projeto, veremos que agora as barras estão utilizando as cores do projeto.
+
+![alt text: Captura de tela do navegador na página do projeto, mostrando o gráfico com a quantidade de usuários em barras para cada rede social. O fundo está branco e as barras em cinza claro.](http://cdn3.gnarususercontent.com.br/3614-ciencia-dados/Imagens/Ciencia%20de%20dados_9.1-FCF2.png)
+
+Essa linha de código é grande demais e difícil de ler. Para otimizar nosso código, vamos criar uma  `const`, em um novo arquivo, que poderá ser usada quantas vezes precisarmos, de forma muito mais prática.
+
+## Criando o arquivo  `common.js`
+
+Dentro da pasta  `graficos`, vamos criar um novo arquivo chamado  `common.js`. Esse arquivo terá todo código que é comum a outros arquivos e que podemos reutilizar.
+
+![alt text: Captura de tela do “EXPLORADOR”, dentro do Visual Studio Code. Vemos o projeto “REDES-SOCIAIS”. Abaixo, um diretório com o nome de “graficos” contêm três arquivos: “common.js”, “informacoesGlobais.js” e “quantidadeUsuarios.js”. Mais abaixo, dois outros arquivos: “index.html” e “style.css”. Uma seta vermelha indica o arquivo “common.js”.](http://cdn3.gnarususercontent.com.br/3614-ciencia-dados/Imagens/Ciencia%20de%20dados_9.1-FCF3.png)
+
+Depois de criar o novo arquivo, vamos adicioná-lo ao código do  `index.html`, através do  `script:module`, definindo o  `src = "graficos/common.js"`.
+
+> Como sempre, lembre-se de conferir se o arquivo  `common.js`  está dentro do diretório  `graficos`.
+
+```xml
+</footer>
+<script type="module" src="graficos/common.js"></script>
+<script type="module" src="graficos/informacoesGlobais.js"></script>
+<script type="module" src="graficos/quantidadeUsuarios.js"></script>
+</body>
+</html>
+
+```
+
+> Uma boa prática é inserir esse módulo comum antes dos demais, para garantir que ele possa ser usado por qualquer outro arquivo.
+
+No arquivo  `common.js`, vamos criar uma  `const`  chamada  `getCSS`, que receberá uma variável como argumento. Em seguida, chamaremos uma * arrow function * (  `=>`  ) e retornaremos o valor da propriedade CSS correspondente a essa variável.
+
+```javascript
+const getCSS = (variavel) => {
+  return getComputedStyle(document.body).getPropertyValue(variavel)
+};
+
+```
+
+> Uma arrow function nada mais é do que uma forma mais enxuta de escrever certas funções, permitindo uma * sintaxe * mais limpa em certos casos.
+
+Em seguida, precisaremos exportar para que outros módulos possam utilizar.
+
+```javascript
+const getCSS = (variavel) => {
+  return getComputedStyle(document.body).getPropertyValue(variavel)
+};
+
+export {getCSS}
+
+```
+
+Voltando ao arquivo  `quantidadeUsuarios.js`, na primeira linha, vamos importar o  `getCSS`  do  `common.js`.
+
+```javascript
+import { getCSS } from "./common.js";
+
+```
+
+Agora, podemos remover a linha de código longa que escrevemos antes e substituí-la simplesmente por  `getCSS('--primary-color')`.
+
+```go
+const data = [
+  {
+    x: 'nomeDasRedes',
+    y: quantidadeDeUsuarios,
+    type: 'bar',
+    marker: {
+      color: getCSS('--primary-color')
+    }
+  }
+]
+
+```
+
+Ao salvar, o projeto continua exatamente como antes, mas agora conseguimos reutilizar o código em outras partes, de maneira muito mais prática.
+
+![alt text: Captura de tela do navegador na página do projeto, mostrando o gráfico com a quantidade de usuários em barras para cada rede social. O fundo está branco e as barras em cinza claro.](http://cdn3.gnarususercontent.com.br/3614-ciencia-dados/Imagens/Ciencia%20de%20dados_9.1-FCF2.png)
+
+Existe uma configuração que pode ser feita para o layout do gráfico. Se quisermos, por exemplo, remover a cor de fundo branca do gráfico e deixar apenas a cor de background, podemos criar uma nova variável chamada  `layout`  e definir a propriedade  `plot_bgcolor`  como  `getCSS('--bg-color')`.
+
+```csharp
+const layout = {
+    plot_bgcolor: getCSS('--bg-color')
+}
+
+```
+
+Em seguida, passamos essa configuração do layout para o gráfico. Então, em  `Plotly.newPlot()`, adicionamos uma vírgula e escrevemos  `layout`.
+
+```kotlin
+Plotly.newPlot(grafico, data, layout)
+
+```
+
+![alt text: Captura de tela do navegador na página do projeto, mostrando o gráfico com a quantidade de usuários em barras para cada rede social. O fundo está branco e as barras em cinza claro. Dentro da área do gráfico, atrás das barras, um fundo escuro com a mesma cor de fundo da página.](http://cdn3.gnarususercontent.com.br/3614-ciencia-dados/Imagens/Ciencia%20de%20dados_9.1-FCF4.png)
+
+Apenas a área logo atrás das barras ficou com a cor de fundo correta. Além disso, temos uma área branca em torno do gráfico. Para alterar a cor dela, vamos adicionar a propriedade  `paper_bgcolor`  ao  `layout`  e definir seu valor como  `getCSS('--bg-color')`.
+
+```csharp
+const layout = {
+    plot_bgcolor: getCSS('--bg-color'),
+    paper_bgcolor: getCSS('--bg-color')
+}
+
+```
+
+![alt text: Captura de tela do navegador na página do projeto, mostrando o gráfico com a quantidade de usuários em barras para cada rede social. O fundo do gráfico está com a mesma cor de fundo da página e as barras em cinza claro.](http://cdn3.gnarususercontent.com.br/3614-ciencia-dados/Imagens/Ciencia%20de%20dados_9.1-FCF5.png)
+
+Agora, nosso gráfico está muito melhor, utilizando as cores da paleta que escolhemos desde o início do projeto.
+
+
+
+
+
+
 ## Unidade Ciência de dados: criando gráficos dinâmicos com JavaScript
 
 
