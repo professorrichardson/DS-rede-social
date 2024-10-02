@@ -1,5 +1,0 @@
-Unidade: Ciência de dados: criando gráficos dinâmicos com JavaScript.
-
-3-CCM->    aulas 01-02
-3-B->ETI-> aulas 01-02
-3-C->NT -> aulas 01
